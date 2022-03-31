@@ -1,0 +1,137 @@
+<footer class="sticky-footer">
+    <div class="container">
+        <div class="text-center">
+            <small>Copyright © Your Website 2017</small>
+        </div>
+    </div>
+</footer>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fa fa-angle-up"></i>
+</a>
+<!-- Logout Modal-->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" href="login.html">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap core JavaScript-->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin.min.js"></script>
+
+
+<script>
+    $(document).ready(function(){
+        console.log('hello')
+        $('.message').on('click', 'button', function(e){
+            e.preventDefault();
+            $('.message').slideUp()
+        })
+
+        setTimeout(function(e) {
+            $('.message').slideUp()
+        }, 2000)
+
+        // function for creating categories
+        
+        $('#create-category-btn').on('click', function(e){
+            e.preventDefault()
+            const categoryTitle = $('#category-title').val()   
+            //alert(categoryTitle) 
+            $.ajax({
+                url: '/admin/category',
+                type: 'POST',
+                data: {categoryTitle: categoryTitle},
+                success: function(response) {
+                    //if there's no error key sent in the json response
+                    if(!response.error){
+                        const newRow = `<tr>
+                            <td>${response.newCategory.title}</td>
+                            <td class="d-flex justify-content-center">
+                                <a href="/admin/category/edit/${response.newCategory._id}" class="btn btn-sm btn-success">Edit</a>
+                                <form action="/admin/category/delete/${response.newCategory._id}?_method=DELETE" method="post">
+                                    <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
+                                </form>
+                            </td>
+                        </tr>`
+                        $('#category-list-tbody').append(newRow)
+                        $('#category-title').val('')
+                    }
+                    // if there's an error key sent in the json reponse
+                    else {
+                        const warning = `
+                        <p class="text-danger pt-1 rounded" id="warning-paragraph">${response.errorMsg}</p>
+                        `
+                        $('#create-category-form').append(warning)
+                        setTimeout(function(e){
+                            $('#warning-paragraph').remove()
+                        }, 3000)
+                    }
+                    
+                },
+                error: function(response) {
+                    console.log(response.msg)
+                }
+            
+
+            }) 
+        })
+
+        $('.category-edit-button').on('click', function(e) {
+            console.log(".category-edit-button hit")
+            e.preventDefault();
+            const currentName = $(this).parent().siblings().text()
+            console.log(currentName)
+            $('#create-category-div').remove()
+            
+            $('#edit-category-div h3').text(`Edit category "${currentName}"`)
+            $('#edit-category-form .category-title').attr({
+                'placeholder' : currentName,
+                'value': currentName
+                })
+
+            $('#edit-category-div').addClass('row d-flex justify-content-center mt-5').css('visibility', 'visible')
+        }) 
+
+        $('#update-category-btn').on('click', function(e) {
+            e.preventDefault()
+            const id = $('a .category-edit-btn')
+            const newTitle = $('#edit-category-form .category-title').val()
+            
+            console.log("ID: ", id, "\nNew Title: ", newTitle)
+            $.ajax({
+                url: `/admin/category/edit/${id}`,
+                type: 'PUT',
+                data: {
+                    title: newTitle
+                }, 
+
+                success: function(response) {
+                    if(!response.error) {
+                        window.location.href = '/admin/category'
+                    }
+                }
+            })
+        })
+
+        
+    })
+
+</script>

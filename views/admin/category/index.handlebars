@@ -1,0 +1,65 @@
+<div class="container">
+    <div class="alert alert-secondary text-center">
+        <h1>All Categories</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <table class="table table-bordered">
+                <thead class="bg-dark text-center">
+                    <tr class="text-white">
+                        <th>Title</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center" id="category-list-tbody">
+                    {{#each categories}}
+                    <tr>
+                        <td>{{title}}</td>
+                        <td class="d-flex justify-content-center">
+                            <a href="/admin/category/edit/{{_id}}" class="btn btn-sm btn-success category-edit-button" categoryId ="{{_id}}" >Edit</a>
+                            <form action="/admin/category/delete/{{_id}}?_method=DELETE" method="post">
+                                <button type="submit" class="btn btn-sm btn-danger ml-2">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    
+    <!-- Create category -->
+    <div class="row d-flex justify-content-center mt-5" id="create-category-div"> 
+        <div class="col-md-8 bg-light p-2">
+            <h3 class="text-white bg-dark px-3 py-2 rounded">Create new category</h3>
+            <form>
+                <div class="form-group" id="create-category-form">
+                    <label for="category-title" id="category-title-label"><strong>Title</strong></label>
+                    <input type="text" name="category-title" id="category-title" placeholder="Enter title" class="form-control">
+                </div>
+                <button class="btn btn-sm btn-outline-success" id="create-category-btn">Create</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Edit Category -->
+    <div id="edit-category-div" style="visibility: hidden;"> 
+        <div class="col-md-8 bg-light p-2">
+            <h3 class="text-white bg-dark px-3 py-2 rounded">Edit category</h3>
+            <form method="post">
+                <div class="form-group" id="edit-category-form">
+                    <label for="category-title" id="edit-title-label"><strong>New Title</strong></label>
+                    <input type="text" name="category-title" id="category-title" placeholder="Enter title" class="form-control category-title">
+                </div>
+                <button class="btn btn-sm btn-outline-warning" id="update-category-btn">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
